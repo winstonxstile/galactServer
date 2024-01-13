@@ -37,9 +37,17 @@ Route::post('/survey/{survey}/answer', [SurveyController::class, 'storeAnswer'])
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/setUserOrder', [AuthController::class, 'setUserOrder']);
+Route::get('/getUserOrder', [AuthController::class, 'getUserOrder']);
+
+
 Route::post('/crOrder', [OrderController::class, 'create']);
 
 
-Route::get('/images', [ImageController::class, 'getImage']);
-Route::post('/images', [ImageController::class, 'addImage']);
+Route::get('/getImages', [ImageController::class, 'getImages']);
+Route::post('/addImage', [ImageController::class, 'addImage']);
+Route::post('/destroyImage', [ImageController::class, 'destroy']);
+Route::get('/getAllImages', [ImageController::class, 'getAllImages']);
+
+Route::get('/allImages', [ImageController::class, 'getAllImagesNames']);
 

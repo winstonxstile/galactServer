@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Image;
+use Illuminate\Support\Facades\File;
+
 
 class ImageController extends Controller
 {
@@ -60,11 +62,10 @@ class ImageController extends Controller
         return response()->json(['success' => 'Image uploaded successfully', 'image' => $image], 200);
     }
 
-    public function getImage(Request $request)
+    public function getImages(Request $request)
     {
         // Получаем имя файла из параметра запроса
         $filename = $request->input('filename');
-
         // Проверяем, существует ли файл в папке storage/app/public/images
         if (Storage::disk('public')->exists('images/' . $filename)) {
             // Возвращаем файл изображения с помощью response()->file()
@@ -73,5 +74,40 @@ class ImageController extends Controller
             // Возвращаем ответ с кодом 404, если файл не найден
             return response()->json(['message' => 'File not found'], 404);
         }
+    }
+
+    public function destroy(Request $request){
+        $filename = $request->input('imageName');
+        if (Storage::disk('public')->exists('images/' . $filename)) {
+            $image = Image::where('name', $filename)->firstOrFail();
+            File::delete(storage_path('app/public/images/' . $filename));
+            $image->delete();
+        } else {
+            // Возвращаем ответ с кодом 404, если файл не найден
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+
+    }
+
+
+    public function getAllImagesNames()
+    {
+        // Получаем все файлы с изображениями из папки storage
+            $imageNames = Image::all()->pluck('name')->toArray();
+            return response()->json($imageNames);
+    }
+
+
+    public function getAllImages(){
+        $url = 'http://127.0.0.1:8000/api/getImages?filename=/';
+
+        $images = Image::all()->pluck('name')->toArray();
+        $imageUrls = [];
+
+        foreach ($images as $image) {
+            $imageUrls[] = $url.$image;
+        }
+        return response()->json($imageUrls);
     }
 }

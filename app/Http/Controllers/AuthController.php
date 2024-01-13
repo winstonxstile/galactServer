@@ -5,6 +5,8 @@ use App\Http\Requests\SignupRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 class AuthController extends Controller
 {
     public function signup(SignupRequest $request)
@@ -36,6 +38,7 @@ class AuthController extends Controller
         }
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
+
         return response([
             'user' => $user,
             'token' => $token
@@ -54,8 +57,32 @@ class AuthController extends Controller
         ]);
     }
 
+    public function setUserOrder(Request $request)
+    {
+        $name = $request->input('user');
+        $value = $request->input('value');
+
+        $user = DB::table('users')->where('name', $name)->first();
+        if ($user) {
+            DB::table('users')->where('name', $name)->update(['order_name' => $value]);
+            return response()->json(['message' => 'Value updated successfully.']);
+        } else {
+            return response()->json(['message' => 'User not found.']);
+        }
+    }
+    public function getUserOrder(Request $request){
+        $name = $request->input('name');
+            $order = DB::table('users')
+                ->where('name', '=', $name)
+                ->select('order_name')
+                ->get();
+
+                return response()->json($order);
+            }
+
     public function me(Request $request)
     {
         return $request->user();
     }
-}
+        }
+
