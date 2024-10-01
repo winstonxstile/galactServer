@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
+class Order extends Model
 {
     // Определение таблицы, к которой относится модель
-    protected $table = 'images';
+    protected $table = 'orders';
 
     // Определение полей, которые можно заполнять массово
-    protected $fillable = ['id','name','path','created_at','updated_at'];
+    protected $fillable = ['id','order', 'created_at','updated_at'];
 }
